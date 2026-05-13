@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Map, X } from 'lucide-react';
 import MapaElectoral from '@/components/charts/MapaElectoral';
-import { resultadosDepartamentos } from '@/data/mockData';
+import { resultadosDepartamentosCSV } from '@/data/mockData';
 import { formatNumber, formatPercent } from '@/utils/formatters';
 import { PARTY_COLORS } from '@/config/routes.config';
 
@@ -9,13 +9,13 @@ export default function MapaPage() {
   const [selectedDept, setSelectedDept] = useState(null);
 
   const selectedData = selectedDept
-    ? resultadosDepartamentos.find(
+    ? resultadosDepartamentosCSV.find(
         (d) => d.departamento.toUpperCase() === selectedDept.toUpperCase()
       )
     : null;
 
   // Get unique winning parties for the legend
-  const partiesInMap = [...new Set(resultadosDepartamentos.map((d) => d.ganador))];
+  const partiesInMap = [...new Set(resultadosDepartamentosCSV.map((d) => d.ganador))];
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -33,7 +33,7 @@ export default function MapaPage() {
         {/* Interactive Map */}
         <div className="lg:col-span-2 rounded-xl border border-surface-700/30 bg-surface-800/40 p-4 overflow-hidden">
           <MapaElectoral
-            departamentos={resultadosDepartamentos}
+            departamentos={resultadosDepartamentosCSV}
             selectedDept={selectedDept}
             onSelectDept={(name) =>
               setSelectedDept(selectedDept === name ? null : name)
@@ -155,14 +155,14 @@ export default function MapaPage() {
             <>
               <div className="p-4 border-b border-surface-700/30 shrink-0">
                 <h3 className="text-sm font-semibold text-surface-100">
-                  Departamentos ({resultadosDepartamentos.length})
+                  Departamentos ({resultadosDepartamentosCSV.length})
                 </h3>
                 <p className="text-xs text-surface-200/30 mt-0.5">
                   Clic en el mapa o en la lista
                 </p>
               </div>
               <div className="overflow-y-auto flex-1">
-                {resultadosDepartamentos
+                {resultadosDepartamentosCSV
                   .sort((a, b) => b.porcentaje - a.porcentaje)
                   .map((dept) => (
                     <button

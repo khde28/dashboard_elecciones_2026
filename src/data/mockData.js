@@ -1,3 +1,6 @@
+import { buildNationalResults, buildRegionalWinners } from '@/data/csvResults';
+import { PARTY_COLORS } from '@/config/routes.config';
+
 /**
  * Datos reales de las Elecciones Generales 2026 - Perú
  * Fuente: ONPE - Resultados oficiales
@@ -170,6 +173,35 @@ export const resultadosParlamentoAndino = {
   actas: actasResumen.categorias.parlamento_andino,
 };
 
+// ============ CSV OVERRIDES (NATIONAL RESULTS) ============
+const csvNational = buildNationalResults();
+const csvRegionalWinners = buildRegionalWinners();
+
+function mergeWithCSV(original, labelFallback) {
+  const partidos = csvNational.partidos.length
+    ? csvNational.partidos.map((item, index) => ({
+        ...item,
+        color: PARTY_COLORS[item.partido] || item.color,
+        id: item.id || index + 1,
+      }))
+    : original.partidos;
+
+  const totalVotos = csvNational.totalVotos || original.totalVotos;
+  const votosValidos = csvNational.votosValidos || original.votosValidos;
+  const votosNulos = csvNational.votosNulos || original.votosNulos;
+  const votosBlancos = csvNational.votosBlancos || original.votosBlancos;
+
+  return {
+    ...original,
+    label: original.label || labelFallback,
+    totalVotos,
+    votosValidos,
+    votosNulos,
+    votosBlancos,
+    partidos,
+  };
+}
+
 // ============ DEPARTAMENTOS SUMMARY ============
 // Ganadores por departamento según datos reales:
 // Fuerza Popular: Áncash, Cajamarca, Callao, La Libertad, Lambayeque, Piura, Tumbes, Amazonas, Loreto, San Martín, Ucayali, Lima Provincias
@@ -205,6 +237,20 @@ export const resultadosDepartamentos = [
   { departamento: 'AMAZONAS', mesas: 1234, contabilizadas: 1233, porcentaje: 99.9, ganador: 'FUERZA POPULAR', electores: 234567 },
   { departamento: 'LIMA PROVINCIAS', mesas: 2876, contabilizadas: 2874, porcentaje: 99.9, ganador: 'FUERZA POPULAR', electores: 698765 },
 ];
+
+export const resultadosPresidencialCSV = mergeWithCSV(resultadosPresidencial, 'Eleccion Presidencial');
+export const resultadosSenadoresDEUCSV = mergeWithCSV(resultadosSenadoresDEU, 'Senadores - Distrito Electoral Unico');
+export const resultadosSenadoresDEMCSV = mergeWithCSV(resultadosSenadoresDEM, 'Senadores - Distrito Electoral Multiple');
+export const resultadosDiputadosCSV = mergeWithCSV(resultadosDiputados, 'Diputados');
+export const resultadosParlamentoAndinoCSV = mergeWithCSV(resultadosParlamentoAndino, 'Parlamento Andino');
+
+export const resultadosDepartamentosCSV = resultadosDepartamentos.map((dept) => {
+  const ganador = csvRegionalWinners[dept.departamento] || dept.ganador;
+  return {
+    ...dept,
+    ganador,
+  };
+});
 
 // ============ ACTAS DETALLE (SAMPLE) ============
 export const actasDetalle = Array.from({ length: 100 }, (_, i) => {
@@ -242,13 +288,13 @@ export const pipelineStatus = {
 // ============ GET DATA BY CATEGORY ============
 export function getResultsByCategory(category) {
   const map = {
-    presidencial: resultadosPresidencial,
-    senadores_deu: resultadosSenadoresDEU,
-    senadores_dem: resultadosSenadoresDEM,
-    diputados: resultadosDiputados,
-    parlamento_andino: resultadosParlamentoAndino,
+    presidencial: resultadosPresidencialCSV,
+    senadores_deu: resultadosSenadoresDEUCSV,
+    senadores_dem: resultadosSenadoresDEMCSV,
+    diputados: resultadosDiputadosCSV,
+    parlamento_andino: resultadosParlamentoAndinoCSV,
   };
-  return map[category] || resultadosPresidencial;
+  return map[category] || resultadosPresidencialCSV;
 }
 
 export function getActasByCategory(category) {

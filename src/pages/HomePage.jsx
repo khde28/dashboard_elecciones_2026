@@ -7,6 +7,7 @@ import CategorySummary from '@/components/dashboard/CategorySummary';
 import BarChartVotos from '@/components/charts/BarChartVotos';
 import PieChartPartidos from '@/components/charts/PieChartPartidos';
 import { actasResumen, getResultsByCategory } from '@/data/mockData';
+import { getCsvMetadata } from '@/data/csvResults';
 import { formatNumber, formatPercent } from '@/utils/formatters';
 import { TOTAL_MESAS } from '@/config/routes.config';
 
@@ -15,6 +16,7 @@ export default function HomePage() {
   const results = getResultsByCategory(activeCategory);
   const actasData = actasResumen.categorias[activeCategory];
   const candidates = results.candidatos || results.partidos || [];
+  const csvMeta = getCsvMetadata();
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -29,9 +31,18 @@ export default function HomePage() {
             Dashboard de resultados electorales — Procesado con Hadoop MapReduce
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="text-xs font-medium text-emerald-400">Datos actualizados</span>
+        <div className="flex flex-col sm:items-end gap-2">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-xs font-medium text-emerald-400">Datos actualizados</span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-700/40 border border-surface-700/60">
+            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span className="text-[11px] font-semibold text-cyan-200/90">Fuente: CSV Hadoop</span>
+            {csvMeta?.defaultElectionId && (
+              <span className="text-[11px] text-surface-200/60">idEleccion {csvMeta.defaultElectionId}</span>
+            )}
+          </div>
         </div>
       </div>
 

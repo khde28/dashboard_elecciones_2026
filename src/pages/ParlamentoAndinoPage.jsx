@@ -1,6 +1,6 @@
 import ElectionResultsPage from './ElectionResultsPage';
-import { resultadosParlamentoAndino } from '@/data/mockData';
+import { resultadosParlamentoAndinoCSV } from '@/data/mockData';
 
 export default function ParlamentoAndinoPage() {
-  return <ElectionResultsPage data={resultadosParlamentoAndino} />;
+  return <ElectionResultsPage data={resultadosParlamentoAndinoCSV} />;
 }

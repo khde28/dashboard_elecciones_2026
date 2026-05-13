@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { MapPin } from 'lucide-react';
-import { resultadosDepartamentos } from '@/data/mockData';
+import { resultadosDepartamentosCSV } from '@/data/mockData';
 import { formatNumber, formatPercent } from '@/utils/formatters';
 import { PARTY_COLORS } from '@/config/routes.config';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -22,7 +22,7 @@ export default function RegionalPage() {
   const [sortDir, setSortDir] = useState('desc');
 
   const sortedData = useMemo(() => {
-    return [...resultadosDepartamentos].sort((a, b) => {
+    return [...resultadosDepartamentosCSV].sort((a, b) => {
       const aVal = a[sortField], bVal = b[sortField];
       const cmp = typeof aVal === 'string' ? aVal.localeCompare(bVal) : aVal - bVal;
       return sortDir === 'desc' ? -cmp : cmp;

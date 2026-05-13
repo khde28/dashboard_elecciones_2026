@@ -1,6 +1,6 @@
 import ElectionResultsPage from './ElectionResultsPage';
-import { resultadosSenadoresDEU } from '@/data/mockData';
+import { resultadosSenadoresDEUCSV } from '@/data/mockData';
 
 export default function SenadoresDEUPage() {
-  return <ElectionResultsPage data={resultadosSenadoresDEU} />;
+  return <ElectionResultsPage data={resultadosSenadoresDEUCSV} />;
 }

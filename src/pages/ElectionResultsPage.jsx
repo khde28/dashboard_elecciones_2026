@@ -4,6 +4,7 @@ import ActasProgressBar from '@/components/dashboard/ActasProgressBar';
 import BarChartVotos from '@/components/charts/BarChartVotos';
 import PieChartPartidos from '@/components/charts/PieChartPartidos';
 import { formatNumber, formatPercent } from '@/utils/formatters';
+import { getCsvMetadata } from '@/data/csvResults';
 
 /**
  * Reusable results page layout for any election category
@@ -13,15 +14,25 @@ export default function ElectionResultsPage({ data }) {
 
   const candidates = data.candidatos || data.partidos || [];
   const isPresidential = !!data.candidatos;
+  const csvMeta = getCsvMetadata();
 
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Title & Description */}
-      <div>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
         <h1 className="text-2xl font-bold text-surface-100">{data.label}</h1>
         <p className="text-sm text-surface-200/50 mt-1">
           Resultados del conteo de actas procesadas con Hadoop MapReduce
         </p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-700/40 border border-surface-700/60">
+          <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+          <span className="text-[11px] font-semibold text-cyan-200/90">Fuente: CSV Hadoop</span>
+          {csvMeta?.defaultElectionId && (
+            <span className="text-[11px] text-surface-200/60">idEleccion {csvMeta.defaultElectionId}</span>
+          )}
+        </div>
       </div>
 
       {/* KPI Cards */}
